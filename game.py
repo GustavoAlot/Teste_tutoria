@@ -37,9 +37,9 @@ level_map = [
     "A.................................W..........C...............................X....................................................B......................G.G.G.G.G.G.G.A",
     "A.............WWWW.................................W..W...W..W...W.........X......................................................B...B................G...............A",
     "A............................G.G.............C.....W..W...W..W...W...........X..................W.......W.............................B..............G.T.T.T.T.T.T.T.T.A",
-    "A..................................................WWWW...WWWW...WWWW.......................W........................B........B.......B.....B..........................A",
-    "A.......WW...SSS........G.G..SSSSSSSSSSS...................................E.X.................SSSSSSSSSSSSSSS.......B........B.............B......G.T.T.T.T.T.T.T.T.T.A",
-    "A....................................................................................................................B........B.............B..........................A",
+    "A..................................................WWWW...WWWW...WWWW.......................W.........................................B................................A",
+    "A.......WW...SSS........G.G..SSSSSSSSSSS...................................E.X.................SSSSSSSSSSSSSSS.......B......................B......G.T.T.T.T.T.T.T.T.T.A",
+    "A....................................................................................................................B......................B..........................A",
     "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 ]
 
@@ -480,6 +480,7 @@ def on_mouse_down(pos):
     global game_state, sound_on
     if game_state == "menu":
         if start_button.collidepoint(pos):
+            reset_level()  # Reinicia a fase antes de começar a jogar
             game_state = "playing"
             if sound_on:
                 music.play("bgm")
@@ -491,6 +492,30 @@ def on_mouse_down(pos):
                 music.stop()
         elif exit_button.collidepoint(pos):
             exit()
+
+
+
+def reset_level():
+    global hero, enemies, show_win_popup, show_intro
+    # Reinicializa o herói
+    hero = Hero()
+    
+    # Reinicializa a lista de inimigos
+    enemies = []
+    for row_idx, row in enumerate(level_map):
+        for col_idx, char in enumerate(row):
+            x = col_idx * TILE_SIZE
+            y = row_idx * TILE_SIZE
+            if char == "E":
+                enemies.append(EnemyTank(x + TILE_SIZE // 2, y + TILE_SIZE))
+            elif char == "B":
+                enemies.append(EnemyBee(x + TILE_SIZE // 2, y + TILE_SIZE // 2))
+    
+    # Reseta os popups
+    show_win_popup = False
+    show_intro = True
+
+
 
 # ----------------------------------------
 # Funcao para reiniciar a musica de fundo
